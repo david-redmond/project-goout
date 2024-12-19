@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  authentication-service:
+    image: daver2910/authentication-service:latest
+    restart: always
+    ports:
+      - 6101:6101
+    environment:
+      - PORT=6101
+      - USER_SERVICE=http://user-service:6102
+      - SECRET_KEY=david-is-cool
+      - MONGODB_URI=mongodb+srv://Development:Password.0@cluster0.lpdtr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+    networks:
+      - internal_network
+
+  user-service:
+    image: daver2910/user-service:latest
+    restart: always
+    env_file:
+      - internal.env
+    environment:
+      - PORT=6102
+    networks:
+      - internal_network
+
+#  go-out-gateway:
+#    image: daver2910/goout-gateway:latest
+#    restart: always
+#    ports:
+#      - 6200:6200
+#    env_file:
+#      - internal.env
+#    environment:
+#      - PORT=6200
+#      - USER_SERVICE=http://user-service:6102
+#    networks:
+#      - internal_network
+#
+#  go-out:
+#    image: daver2910/goout-ui:latest
+#    restart: always
+#    ports:
+#      - 5202:5202
+#    environment:
+#      - PORT=5202
+#      - REACT_APP_ENDPOINT=https://gateway.goout.ie
+
+networks:
+  internal_network:
+    driver: bridge
